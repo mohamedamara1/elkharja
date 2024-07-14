@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
-import { AvailabilityCalendar } from "../../../components/availability-calendar";
-import LoginDialog from "../../../components/login-dialog";
+import { AvailabilityCalendar } from "../../components/availability-calendar";
+import LoginDialog from "../../components/login-dialog";
 import { useAuth } from "../../context/auth-context";
 import useLoginDialog from "../../../components/hooks/use-login";
 import { useEffect } from "react";

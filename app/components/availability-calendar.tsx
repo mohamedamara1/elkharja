@@ -2,18 +2,18 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { GhostIcon, Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { getSheetData } from "../app/api/events/get-event.action";
+import { getSheetData } from "../api/events/get-event.action";
 import {
   Availability,
   AvailabilityStatus,
   DayAvailability,
   Member,
-} from "../types/event";
-import { sheetTransformer } from "../app/services/sheet-to-json-transformer";
-import { useAuth } from "../app/context/auth-context";
-import { Button } from "./ui/button";
-import { cn } from "../lib/utils";
-import { updateUserAvailability } from "../app/api/events/update-user-availability.action";
+} from "../../types/event";
+import { sheetTransformer } from "../services/sheet-to-json-transformer";
+import { useAuth } from "../context/auth-context";
+import { Button } from "../../components/ui/button";
+import { cn } from "../../lib/utils";
+import { updateUserAvailability } from "../api/events/update-user-availability.action";
 
 const AVAILABILITY_COLORS: Record<AvailabilityStatus, string> = {
   yes: "bg-green-500 text-green-50",

@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "../app/context/auth-context";
-import { createEventSheet } from "../app/api/events/add-event.action";
+import { useAuth } from "../context/auth-context";
+import { createEventSheet } from "../api/events/add-event.action";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useLocalStorage } from "react-use";

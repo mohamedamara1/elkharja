@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CreateEventDialog } from "../../components/create-event-dialog";
+import { CreateEventDialog } from "../components/create-event-dialog";
 import useLoginDialog from "../../components/hooks/use-login";
-import LoginDialog from "../../components/login-dialog";
+import LoginDialog from "../components/login-dialog";
 import { useAuth } from "../context/auth-context";
 import { useLocalStorage } from "react-use";
 import { useRouter } from "next/navigation";
