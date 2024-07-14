@@ -21,10 +21,3 @@ export interface Member {
   name: string;
   availability: Availability;
 }
-
-export const AVAILABILITY_COLORS: Record<AvailabilityStatus, string> = {
-  yes: "bg-green-500 text-green-50",
-  no: "bg-red-500 text-red-50",
-  maybe: "bg-yellow-500 text-yellow-50",
-  unknown: "bg-gray-500 text-gray-50",
-};

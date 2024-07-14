@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { getSheetData } from "../app/api/events/get-event.action";
 import {
   Availability,
-  AVAILABILITY_COLORS,
   AvailabilityStatus,
   DayAvailability,
   Member,
@@ -15,49 +14,12 @@ import { useAuth } from "../app/context/auth-context";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
 import { updateUserAvailability } from "../app/api/events/update-user-availability.action";
-const defaultAvailability: Availability = {
-  monday: {
-    morning: "unknown",
-    afternoon: "unknown",
-    evening: "unknown",
-    night: "unknown",
-  },
-  tuesday: {
-    morning: "unknown",
-    afternoon: "unknown",
-    evening: "unknown",
-    night: "unknown",
-  },
-  wednesday: {
-    morning: "unknown",
-    afternoon: "unknown",
-    evening: "unknown",
-    night: "unknown",
-  },
-  thursday: {
-    morning: "unknown",
-    afternoon: "unknown",
-    evening: "unknown",
-    night: "unknown",
-  },
-  friday: {
-    morning: "unknown",
-    afternoon: "unknown",
-    evening: "unknown",
-    night: "unknown",
-  },
-  saturday: {
-    morning: "unknown",
-    afternoon: "unknown",
-    evening: "unknown",
-    night: "unknown",
-  },
-  sunday: {
-    morning: "unknown",
-    afternoon: "unknown",
-    evening: "unknown",
-    night: "unknown",
-  },
+
+const AVAILABILITY_COLORS: Record<AvailabilityStatus, string> = {
+  yes: "bg-green-500 text-green-50",
+  no: "bg-red-500 text-red-50",
+  maybe: "bg-yellow-500 text-yellow-50",
+  unknown: "bg-gray-500 text-gray-50",
 };
 
 interface AvailabilityCalendarProps {
