@@ -12,12 +12,16 @@ const useLoginDialog = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (inputUsername: string, inputPassword: string) => {
+    if (!inputUsername || !inputPassword) {
+      toast.error("Please enter a username and password");
+      return;
+    }
     const authenticated = await performLogin(inputUsername, inputPassword);
     if (authenticated) {
       setOpen(false);
       toast.success("Login successful");
     } else {
-      setError("Incorrect username or password. Please try again.");
+      toast.error("Login failed");
     }
   };
 
