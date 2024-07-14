@@ -15,7 +15,7 @@ export default function EventPage() {
     if (!username) {
       setOpen(true);
     }
-  }, [username]);
+  }, [username, setOpen]);
   return (
     <div className="h-screen">
       <AvailabilityCalendar

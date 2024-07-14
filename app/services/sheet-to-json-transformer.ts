@@ -168,7 +168,5 @@ export const sheetTransformer = (sheetData: any): Member[] => {
     console.error("Error transforming sheet data:", e);
   }
 
-  // Now 'members' array contains the transformed data
-  console.log(members);
   return members;
 };

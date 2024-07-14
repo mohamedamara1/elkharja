@@ -114,7 +114,7 @@ export function AvailabilityCalendar({
         });
       });
     }
-  }, [availability]);
+  }, [availability, username]);
 
   useEffect(() => {
     if (username) {
@@ -190,6 +190,7 @@ export function AvailabilityCalendar({
           {(["yes", "maybe", "no"] as AvailabilityStatus[]).map(
             (status: AvailabilityStatus) => (
               <Button
+                key={status}
                 className={cn(
                   chosenAvailability === status && "scale-150 mx-4",
                   chosenAvailability == undefined && "scale-100",
@@ -199,7 +200,6 @@ export function AvailabilityCalendar({
                 )}
                 onClick={() => {
                   if (chosenAvailability == status) {
-                    console.log("reset");
                     setChosenAvailability(undefined);
                   }
                   setChosenAvailability(status as AvailabilityStatus);
