@@ -18,7 +18,7 @@ export async function createEventSheet(username: string, eventReference: any) {
 
   const sheetData = await glSheets.spreadsheets.values.get({
     spreadsheetId: process.env.GOOGLE_DOC_ID,
-    range: "Sheet1!A1:AC1000",
+    range: `${eventReference}!A1:AC1000`,
   });
 
   const headers = sheetData.data.values ? sheetData.data.values[0] : [];

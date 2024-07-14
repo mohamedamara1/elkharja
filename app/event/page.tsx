@@ -15,8 +15,6 @@ const EventsPage: React.FC = () => {
   const [openCreateEvent, setOpenCreateEvent] = useState(false);
   const [dirty, setDirty] = useState(false);
 
-  const { open, setOpen, inputValue, setInputValue, handleLogin } =
-    useLoginDialog();
   const { username } = useAuth();
   const [myEvents, setMyEvents] = useLocalStorage<any[]>("myEvents", []);
 
@@ -35,7 +33,6 @@ const EventsPage: React.FC = () => {
           size={"lg"}
           onClick={() => {
             setOpenCreateEvent(true);
-            open ? setOpen(false) : !username ? setOpen(true) : setOpen(false);
           }}
         >
           Create Event
@@ -63,13 +60,6 @@ const EventsPage: React.FC = () => {
         open={openCreateEvent}
         setOpen={setOpenCreateEvent}
         setDirty={setDirty}
-      />
-      <LoginDialog
-        open={open}
-        setOpen={setOpen}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        handleSubmit={handleLogin}
       />
     </div>
   );

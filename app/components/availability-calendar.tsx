@@ -213,7 +213,7 @@ export function AvailabilityCalendar({
                   ].map((day) => (
                     <div
                       key={day}
-                      className="flex flex-row flex-wrap gap-2 min-h-28 border rounded-md p-2  hover:bg-stone-500 transition duration-500 hover:scale-110 transform"
+                      className="flex flex-row flex-wrap gap-2 min-h-28 border rounded-md p-2  "
                       onClick={() => {
                         if (!chosenAvailability) return;
                         handleCellClick(
@@ -239,15 +239,24 @@ export function AvailabilityCalendar({
                           return (
                             <div
                               key={index}
-                              className={`px-2 py-1 rounded-md flex items-center gap-2  ${AVAILABILITY_COLORS[availabilityStatus]} h-12 w-fit`}
+                              className={cn(
+                                member.name == clientUsername &&
+                                  "static hover:scale-110 transition duration-500 transform",
+                                `flex flex-col items-center w-20 h-12 p-2 min-w-20 rounded-md  gap-2  ${AVAILABILITY_COLORS[availabilityStatus]} `,
+                              )}
                             >
-                              <Avatar className="w-6 h-6">
-                                <AvatarImage src="/placeholder-user.jpg" />
-                                <AvatarFallback>
-                                  {(member.name as string).charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="text-sm">{member.name}</span>
+                              <div className={cn("flex flex-row gap-2")}>
+                                <Avatar className="w-6 h-6">
+                                  <AvatarImage
+                                    src="/placeholder-user.jpg"
+                                    className="bg-slate-500"
+                                  />
+                                  <AvatarFallback>
+                                    {(member.name as string).charAt(0)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-sm">{member.name}</span>
+                              </div>
                             </div>
                           );
                         })}

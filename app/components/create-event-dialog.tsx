@@ -19,7 +19,6 @@ import { useLocalStorage } from "react-use";
 export function CreateEventDialog({ open, setOpen, setDirty }: any) {
   const [eventName, setEventName] = useState("");
   const { username } = useAuth();
-  useLocalStorage("myEvents", []);
   const [myEvents, setMyEvents] = useLocalStorage<any[]>("myEvents", []);
 
   const handleSubmit = () => {

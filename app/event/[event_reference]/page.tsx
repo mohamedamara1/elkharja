@@ -1,32 +1,28 @@
 "use client";
 import { useParams } from "next/navigation";
 import { AvailabilityCalendar } from "../../components/availability-calendar";
-import LoginDialog from "../../components/login-dialog";
 import { useAuth } from "../../context/auth-context";
 import useLoginDialog from "../../../components/hooks/use-login";
 import { useEffect } from "react";
+import { useLocalStorage } from "react-use";
 
 export default function EventPage() {
   const params = useParams();
-  const { open, setOpen, inputValue, setInputValue, handleLogin } =
-    useLoginDialog();
-  const { username } = useAuth();
+  const [myEvents, setMyEvents] = useLocalStorage<any[]>("myEvents", []);
+
   useEffect(() => {
-    if (!username) {
-      setOpen(true);
+    if (params?.event_reference) {
+      const eventExists = myEvents?.find(
+        (event) => event.title === params?.event_reference,
+      );
+      !eventExists &&
+        setMyEvents([...(myEvents as any), { title: params?.event_reference }]);
     }
-  }, [username, setOpen]);
+  }, []);
   return (
     <div className="h-screen">
       <AvailabilityCalendar
         eventReference={params?.event_reference as string}
-      />
-      <LoginDialog
-        open={open}
-        setOpen={setOpen}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        handleSubmit={handleLogin}
       />
     </div>
   );
