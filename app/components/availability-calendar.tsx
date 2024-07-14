@@ -1,6 +1,6 @@
 "use client";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { GhostIcon, Loader2Icon } from "lucide-react";
+import { Cross, CrossIcon, GhostIcon, Loader2Icon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { getSheetData } from "../api/events/get-event.action";
 import {
@@ -14,6 +14,12 @@ import { useAuth } from "../context/auth-context";
 import { Button } from "../../components/ui/button";
 import { cn } from "../../lib/utils";
 import { updateUserAvailability } from "../api/events/update-user-availability.action";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const AVAILABILITY_COLORS: Record<AvailabilityStatus, string> = {
   yes: "bg-green-500 text-green-50",
@@ -138,8 +144,8 @@ export function AvailabilityCalendar({
     setChanges(undefined);
   };
   return (
-    <div className="pt-4">
-      <div className="flex flex-col gap-2 m-auto w-fit p-4 align-middle items-center">
+    <div className="pt-4 flex flex-col gap-2">
+      <div className="flex flex-col gap-8 m-auto w-fit p-4 align-middle items-center">
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Hello{" "}
           <span className="text-3xl text-blue-500">
@@ -161,10 +167,12 @@ export function AvailabilityCalendar({
                   ],
                 )}
                 onClick={() => {
-                  if (chosenAvailability == status) {
-                    setChosenAvailability(undefined);
-                  }
-                  setChosenAvailability(status as AvailabilityStatus);
+                  setChosenAvailability((prev) => {
+                    if (prev === status) {
+                      return undefined;
+                    }
+                    return status;
+                  });
                 }}
               >
                 {status}
@@ -185,7 +193,7 @@ export function AvailabilityCalendar({
           </div>
         )}
       </div>
-      <div className="bg-background text-foreground p-6 rounded-lg shadow-lg h-full">
+      <div className="bg-slate-100/20 text-foreground p-6 rounded-lg shadow-lg h-full">
         <div className="grid grid-cols-8 gap-4">
           <div className="col-span-1 font-medium">Time</div>
           <div className="col-span-7 grid grid-cols-7 gap-4">
@@ -246,17 +254,45 @@ export function AvailabilityCalendar({
                               )}
                             >
                               <div className={cn("flex flex-row gap-2")}>
-                                <Avatar className="w-6 h-6">
-                                  <AvatarImage
-                                    src="/placeholder-user.jpg"
-                                    className="bg-slate-500"
-                                  />
-                                  <AvatarFallback>
-                                    {(member.name as string).charAt(0)}
-                                  </AvatarFallback>
-                                </Avatar>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <Avatar
+                                        className="w-6 h-6"
+                                        onClick={() => {
+                                          if (member.name === clientUsername) {
+                                            handleCellClick(
+                                              day as keyof Availability,
+                                              time as keyof DayAvailability,
+                                              "unknown",
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        <AvatarImage
+                                          src="/placeholder-user.jpg"
+                                          className="bg-slate-500"
+                                        />
+                                        <AvatarFallback>
+                                          {(member.name as string).charAt(0)}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                    </TooltipTrigger>
+                                    {member.name === clientUsername && (
+                                      <TooltipContent>
+                                        Click to delete
+                                      </TooltipContent>
+                                    )}
+                                  </Tooltip>
+                                </TooltipProvider>
+
                                 <span className="text-sm">{member.name}</span>
                               </div>
+                              {member.name === clientUsername && (
+                                <div className="relative group">
+                                  <XIcon className="w-4 h-4 text-red-700 hidden group-hover:block absolute top-0 right-0" />
+                                </div>
+                              )}
                             </div>
                           );
                         })}

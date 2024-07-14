@@ -20,7 +20,7 @@ export default function EventPage() {
     }
   }, []);
   return (
-    <div className="h-screen">
+    <div className="h-screen bg-gray-100/50">
       <AvailabilityCalendar
         eventReference={params?.event_reference as string}
       />
