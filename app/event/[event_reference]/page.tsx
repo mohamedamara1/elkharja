@@ -5,10 +5,13 @@ import { useAuth } from "../../context/auth-context";
 import useLoginDialog from "../../../components/hooks/use-login";
 import { useEffect } from "react";
 import { useLocalStorage } from "react-use";
+import MobileCalendar from "../../components/mobile-calendar";
+import { useScreenDetector } from "../../components/useScreenDetector";
 
 export default function EventPage() {
   const params = useParams();
   const [myEvents, setMyEvents] = useLocalStorage<any[]>("myEvents", []);
+  const { isMobile, isTablet, isDesktop } = useScreenDetector();
 
   useEffect(() => {
     if (params?.event_reference) {
@@ -21,9 +24,13 @@ export default function EventPage() {
   }, []);
   return (
     <div className="h-screen bg-gray-100/50">
-      <AvailabilityCalendar
-        eventReference={params?.event_reference as string}
-      />
+      {isMobile ? (
+        <MobileCalendar eventReference={params?.event_reference as string} />
+      ) : (
+        <AvailabilityCalendar
+          eventReference={params?.event_reference as string}
+        />
+      )}
     </div>
   );
 }

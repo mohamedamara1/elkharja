@@ -20,6 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import useAvailabilityCalendar from "./use-availability-calendar";
 
 const AVAILABILITY_COLORS: Record<AvailabilityStatus, string> = {
   yes: "bg-green-500 text-green-50",
@@ -34,115 +35,18 @@ interface AvailabilityCalendarProps {
 export function AvailabilityCalendar({
   eventReference,
 }: AvailabilityCalendarProps) {
-  const { username } = useAuth();
-  const [clientUsername, setClientUsername] = useState<string | null>(null);
-
-  const [chosenAvailability, setChosenAvailability] = useState<
-    AvailabilityStatus | undefined
-  >(undefined);
-
-  const [availability, setAvailability] = useState<Availability | undefined>(
-    undefined,
-  );
-  const [originalAvailability, setOriginalAvailability] = useState<
-    Availability | undefined
-  >(undefined);
-
-  const [changes, setChanges] = useState<Availability | undefined>(undefined);
-  const [members, setMembers] = useState<Member[]>([]);
-  const [dirty, setDirty] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!eventReference) return;
-
-    const fetchData = async () => {
-      const data = await getSheetData(eventReference);
-      const transformedData = sheetTransformer(data.data as any);
-      setMembers(transformedData);
-      const userAvailability = transformedData.find(
-        (member) => member.name === username,
-      )?.availability;
-      setAvailability(userAvailability);
-      setOriginalAvailability(userAvailability); // Set original availability
-      dirty && setDirty(false);
-    };
-
-    fetchData();
-  }, [eventReference, username, dirty]);
-  useEffect(() => {
-    if (availability) {
-      setMembers((prev) => {
-        if (prev.length === 0) return prev;
-        return prev.map((member) => {
-          if (member.name === username) {
-            return { ...member, availability };
-          }
-          return member;
-        });
-      });
-    }
-  }, [availability, username]);
-
-  useEffect(() => {
-    if (username) {
-      setClientUsername(username);
-    }
-  }, [username]);
-
-  const handleCellClick = (
-    day: keyof Availability,
-    time: keyof DayAvailability,
-    value: AvailabilityStatus,
-  ) => {
-    const newAvailability = {
-      ...(availability as any),
-      [day]: {
-        ...availability?.[day],
-        [time]: value,
-      },
-    };
-    setAvailability((prev) => newAvailability);
-    setMembers((prev: any) => {
-      if (prev.length === 0) return prev;
-      const member = prev.find((member: any) => member.name === username);
-
-      if (member) {
-        return prev.map((m: any) => {
-          if (m.name === username) {
-            return { ...m, availability: newAvailability };
-          }
-          return m;
-        });
-      } else {
-        return [...prev, { name: username, availability: newAvailability }];
-      }
-    });
-    setChanges((prev) => ({
-      ...(prev as any),
-      [day]: {
-        ...prev?.[day],
-        [time]: value,
-      },
-    }));
-  };
-
-  const handleSaveChanges = async () => {
-    // Call the server action to update the availability
-    setLoading(true);
-    await updateUserAvailability(
-      eventReference,
-      clientUsername as string,
-      changes,
-    );
-    // Clear changes after saving
-    setLoading(false);
-    setChanges(undefined);
-  };
-  const handleCancelChanges = async () => {
-    setAvailability(originalAvailability);
-    setChanges(undefined);
-  };
+  const {
+    clientUsername,
+    chosenAvailability,
+    setChosenAvailability,
+    availability,
+    members,
+    changes,
+    handleCellClick,
+    handleSaveChanges,
+    handleCancelChanges,
+    loading,
+  } = useAvailabilityCalendar(eventReference);
   return (
     <div className="pt-4 flex flex-col gap-2">
       <div className="flex flex-col gap-8 m-auto w-fit p-4 align-middle items-center">
