@@ -1,5 +1,4 @@
 "use client";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Cross, CrossIcon, GhostIcon, Loader2Icon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { getSheetData } from "../api/events/get-event.action";
@@ -21,6 +20,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useAvailabilityCalendar from "./use-availability-calendar";
+import MemberAvailability from "./member-availability";
+import { DndProvider, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const AVAILABILITY_COLORS: Record<AvailabilityStatus, string> = {
   yes: "bg-green-500 text-green-50",
@@ -47,6 +49,16 @@ export function AvailabilityCalendar({
     handleCancelChanges,
     loading,
   } = useAvailabilityCalendar(eventReference);
+  const handleDropMemberAvailability = (item: any) => {
+    console.log("dropped item", item);
+  };
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: "item",
+    drop: (item) => handleDropMemberAvailability(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
   return (
     <div className="pt-4 flex flex-col gap-2">
       <div className="flex flex-col gap-8 m-auto w-fit p-4 align-middle items-center">
@@ -124,6 +136,7 @@ export function AvailabilityCalendar({
                     "sunday",
                   ].map((day) => (
                     <div
+                      ref={drop as any}
                       key={day}
                       className="flex flex-row flex-wrap gap-2 min-h-28 border rounded-md p-2  "
                       onClick={() => {
@@ -149,55 +162,17 @@ export function AvailabilityCalendar({
                           }
 
                           return (
-                            <div
+                            <MemberAvailability
                               key={index}
-                              className={cn(
-                                member.name == clientUsername &&
-                                  "static hover:scale-110 transition duration-500 transform",
-                                `flex flex-col items-center w-20 h-12 p-2 min-w-20 rounded-md  gap-2  ${AVAILABILITY_COLORS[availabilityStatus]} `,
-                              )}
-                            >
-                              <div className={cn("flex flex-row gap-2")}>
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger>
-                                      <Avatar
-                                        className="w-6 h-6"
-                                        onClick={() => {
-                                          if (member.name === clientUsername) {
-                                            handleCellClick(
-                                              day as keyof Availability,
-                                              time as keyof DayAvailability,
-                                              "unknown",
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        <AvatarImage
-                                          src="/placeholder-user.jpg"
-                                          className="bg-slate-500"
-                                        />
-                                        <AvatarFallback>
-                                          {(member.name as string).charAt(0)}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                    </TooltipTrigger>
-                                    {member.name === clientUsername && (
-                                      <TooltipContent>
-                                        Click to delete
-                                      </TooltipContent>
-                                    )}
-                                  </Tooltip>
-                                </TooltipProvider>
-
-                                <span className="text-sm">{member.name}</span>
-                              </div>
-                              {member.name === clientUsername && (
-                                <div className="relative group">
-                                  <XIcon className="w-4 h-4 text-red-700 hidden group-hover:block absolute top-0 right-0" />
-                                </div>
-                              )}
-                            </div>
+                              member={member}
+                              clientUsername={clientUsername}
+                              day={day}
+                              time={time}
+                              availabilityStatus={availabilityStatus}
+                              AVAILABILITY_COLORS={AVAILABILITY_COLORS}
+                              handleCellClick={handleCellClick}
+                              index={index}
+                            />
                           );
                         })}
 

@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import { useLocalStorage } from "react-use";
 import MobileCalendar from "../../components/mobile-calendar";
 import { useScreenDetector } from "../../components/useScreenDetector";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export default function EventPage() {
   const params = useParams();
@@ -23,14 +25,16 @@ export default function EventPage() {
     }
   }, []);
   return (
-    <div className="h-screen bg-gray-100/50">
-      {isMobile ? (
-        <MobileCalendar eventReference={params?.event_reference as string} />
-      ) : (
-        <AvailabilityCalendar
-          eventReference={params?.event_reference as string}
-        />
-      )}
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div className="h-screen bg-gray-100/50">
+        {isMobile ? (
+          <MobileCalendar eventReference={params?.event_reference as string} />
+        ) : (
+          <AvailabilityCalendar
+            eventReference={params?.event_reference as string}
+          />
+        )}
+      </div>
+    </DndProvider>
   );
 }
