@@ -22,7 +22,7 @@ const MemberAvailability = ({
 }: any) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "item",
-    item: { name },
+    item: { status: availabilityStatus, member: member },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -56,6 +56,7 @@ const MemberAvailability = ({
                 <AvatarImage
                   src="/placeholder-user.jpg"
                   className="bg-slate-500"
+                  draggable={false}
                 />
                 <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
               </Avatar>
