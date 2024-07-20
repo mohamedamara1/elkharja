@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAvailabilityCalendar from "./use-availability-calendar";
 import { Button } from "../../components/ui/button";
 import { GhostIcon, Loader2Icon } from "lucide-react";
@@ -12,6 +12,7 @@ import { cn } from "../../lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -28,6 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import useEmblaCarousel from "embla-carousel-react";
 
 const daysOfWeek = [
   "monday",
@@ -63,17 +65,31 @@ const MobileCalendar: React.FC<MobileCalendarProps> = ({ eventReference }) => {
     loading,
   } = useAvailabilityCalendar(eventReference);
 
+  const [api, setApi] = useState<CarouselApi>();
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   const selectedDay = daysOfWeek[selectedDayIndex];
   const handleDayClick = (index: number) => {
-    setSelectedDayIndex(index);
-    // Optionally scroll to the selected day in the carousel if necessary
-    const carouselItem = document.querySelector(`#carousel-item-${index}`);
-    if (carouselItem) {
-      carouselItem.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (api) {
+      api.scrollTo(index);
+      setSelectedDayIndex(index);
     }
   };
+
+  useEffect(() => {
+    if (api) {
+      const updateSelectedDayIndex: any = () =>
+        setSelectedDayIndex(api.selectedScrollSnap());
+      api.on("select", updateSelectedDayIndex);
+
+      // Initial set
+      setSelectedDayIndex(api.selectedScrollSnap());
+
+      return () => {
+        api.off("select", updateSelectedDayIndex);
+      };
+    }
+  }, [api]);
   return (
     <div className="pt-4 flex flex-col gap-2">
       <div className="flex flex-col gap-8 m-auto w-fit p-4 align-middle items-center">
@@ -125,8 +141,8 @@ const MobileCalendar: React.FC<MobileCalendarProps> = ({ eventReference }) => {
         )}
       </div>
       <div className="bg-slate-100/20 text-foreground p-2 rounded-lg shadow-lg h-full">
-        <Carousel className="w-full">
-          <div className="flex bg-white shadow-md justify-start md:justify-center rounded-lg overflow-x-scroll mx-auto py-2 px-2 md:mx-12 mb-10">
+        <Carousel setApi={setApi} className="w-full">
+          <div className="flex bg-white shadow-md justify-start md:justify-center rounded-lg overflow-x-scroll mx-auto py-2 md:mx-12 mb-10 w-full">
             {daysOfWeek.map((day, index) => (
               <DayButton
                 key={index}
@@ -255,8 +271,6 @@ const MobileCalendar: React.FC<MobileCalendarProps> = ({ eventReference }) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
         </Carousel>
       </div>
     </div>
