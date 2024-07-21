@@ -22,14 +22,18 @@ const MemberAvailability = ({
 }: any) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "item",
-    item: { status: availabilityStatus, member: member },
+    item: {
+      status: availabilityStatus,
+      member: member,
+      oldCell: { day, time },
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   }));
   return (
     <div
-      ref={drag as any}
+      ref={member.name === clientUsername ? (drag as any) : null}
       key={index}
       className={cn(
         member.name === clientUsername &&

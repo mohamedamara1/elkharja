@@ -1,4 +1,9 @@
-export type AvailabilityStatus = "yes" | "no" | "maybe" | "unknown";
+export enum AvailabilityStatus {
+  yes = "yes",
+  maybe = "maybe",
+  no = "no",
+  unknown = "unknown",
+}
 
 export interface DayAvailability {
   morning: AvailabilityStatus;
