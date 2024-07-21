@@ -9,6 +9,7 @@ import {
 import { sheetTransformer } from "../services/sheet-to-json-transformer";
 import { useAuth } from "../context/auth-context";
 import { updateUserAvailability } from "../api/events/update-user-availability.action";
+import { set } from "date-fns";
 
 const useAvailabilityCalendar = (eventReference: string) => {
   const { username } = useAuth();
@@ -38,7 +39,7 @@ const useAvailabilityCalendar = (eventReference: string) => {
         (member) => member.name === username,
       )?.availability;
       setAvailability(userAvailability);
-      setOriginalAvailability(userAvailability); // Set original availability
+      setOriginalAvailability(userAvailability);
       dirty && setDirty(false);
     };
 
@@ -118,6 +119,36 @@ const useAvailabilityCalendar = (eventReference: string) => {
     setChanges(undefined);
   };
 
+  const swapAvailabilityStatus = (
+    oldDay: any,
+    oldTime: any,
+    newDay: any,
+    newTime: any,
+    status: any,
+  ) => {
+    setAvailability((oldAvailability) => {
+      const newAvailability: any = { ...oldAvailability };
+
+      // Clear the old cell
+      newAvailability[oldDay] = {
+        ...newAvailability[oldDay],
+        [oldTime]: AvailabilityStatus.unknown, // Assuming Unavailable is the default empty state
+      };
+
+      // Set the new cell
+      newAvailability[newDay] = {
+        ...newAvailability[newDay],
+        [newTime]: status,
+      };
+      setChanges(newAvailability);
+
+      if (oldAvailability) {
+        return newAvailability;
+      }
+      return oldAvailability;
+    });
+  };
+
   return {
     clientUsername,
     chosenAvailability,
@@ -128,6 +159,7 @@ const useAvailabilityCalendar = (eventReference: string) => {
     handleCellClick,
     handleSaveChanges,
     handleCancelChanges,
+    swapAvailabilityStatus,
     loading,
   };
 };

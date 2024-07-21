@@ -183,10 +183,7 @@ const MobileCalendar: React.FC<MobileCalendarProps> = ({ eventReference }) => {
                                       member.availability?.[
                                         day as keyof Availability
                                       ]?.[time as keyof DayAvailability];
-                                    console.log(
-                                      "availabilityStatus",
-                                      availabilityStatus,
-                                    );
+
                                     if (availabilityStatus === "unknown") {
                                       return null;
                                     }
@@ -214,7 +211,7 @@ const MobileCalendar: React.FC<MobileCalendarProps> = ({ eventReference }) => {
                                                       handleCellClick(
                                                         day as keyof Availability,
                                                         time as keyof DayAvailability,
-                                                        "unknown",
+                                                        AvailabilityStatus.unknown,
                                                       );
                                                     }
                                                   }}

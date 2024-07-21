@@ -1,4 +1,4 @@
-const finalMembers: Member[] = [
+/*const finalMembers: Member[] = [
   {
     name: "John",
     availability: {
@@ -46,49 +46,7 @@ const finalMembers: Member[] = [
       },
     },
   },
-  {
-    name: "Bob",
-    availability: {
-      monday: {
-        morning: "yes",
-        afternoon: "maybe",
-        evening: "unknown",
-        night: "maybe",
-      },
-      tuesday: { morning: "no", afternoon: "no", evening: "yes", night: "yes" },
-      wednesday: {
-        morning: "yes",
-        afternoon: "no",
-        evening: "yes",
-        night: "unknown",
-      },
-      thursday: {
-        morning: "no",
-        afternoon: "yes",
-        evening: "unknown",
-        night: "yes",
-      },
-      friday: {
-        morning: "yes",
-        afternoon: "no",
-        evening: "yes",
-        night: "unknown",
-      },
-      saturday: {
-        morning: "unknown",
-        afternoon: "yes",
-        evening: "unknown",
-        night: "yes",
-      },
-      sunday: {
-        morning: "yes",
-        afternoon: "no",
-        evening: "yes",
-        night: "unknown",
-      },
-    },
-  },
-];
+];*/
 import { sheets_v4 } from "googleapis"; // Import the appropriate Google Sheets API typings
 import { Member } from "../../types/event";
 

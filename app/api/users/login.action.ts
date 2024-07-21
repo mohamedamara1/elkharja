@@ -34,7 +34,6 @@ export async function login(
 
     const credentials = sheetData.data.values || [];
     let foundUser = credentials.find((row) => row[0] === username); // Adjusted index to check against column AD
-    console.log("foundUser", foundUser);
     if (!foundUser) {
       // If user not found, create a new user row
       const newUserRow = [username, ...Array(28).fill(""), password]; // Assuming 30 columns before password in AD

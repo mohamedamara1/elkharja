@@ -1,5 +1,4 @@
 "use client";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Cross, CrossIcon, GhostIcon, Loader2Icon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { getSheetData } from "../api/events/get-event.action";
@@ -9,18 +8,12 @@ import {
   DayAvailability,
   Member,
 } from "../../types/event";
-import { sheetTransformer } from "../services/sheet-to-json-transformer";
-import { useAuth } from "../context/auth-context";
 import { Button } from "../../components/ui/button";
 import { cn } from "../../lib/utils";
-import { updateUserAvailability } from "../api/events/update-user-availability.action";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import useAvailabilityCalendar from "./use-availability-calendar";
+
+import CalendarCell from "./calendar-cell";
 
 const AVAILABILITY_COLORS: Record<AvailabilityStatus, string> = {
   yes: "bg-green-500 text-green-50",
@@ -45,10 +38,13 @@ export function AvailabilityCalendar({
     handleCellClick,
     handleSaveChanges,
     handleCancelChanges,
+    swapAvailabilityStatus,
     loading,
   } = useAvailabilityCalendar(eventReference);
+
   return (
     <div className="pt-4 flex flex-col gap-2">
+      <div className="w-40 h-40 bg-black"></div>
       <div className="flex flex-col gap-8 m-auto w-fit p-4 align-middle items-center">
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Hello{" "}
@@ -123,100 +119,17 @@ export function AvailabilityCalendar({
                     "saturday",
                     "sunday",
                   ].map((day) => (
-                    <div
+                    <CalendarCell
                       key={day}
-                      className="flex flex-row flex-wrap gap-2 min-h-28 border rounded-md p-2  "
-                      onClick={() => {
-                        if (!chosenAvailability) return;
-                        handleCellClick(
-                          day as keyof Availability,
-                          time as keyof DayAvailability,
-                          chosenAvailability as AvailabilityStatus,
-                        );
-                      }}
-                    >
-                      {/* Extract availability statuses at the specific day and time */}
-                      {members &&
-                        members.length > 0 &&
-                        members.map((member, index) => {
-                          const availabilityStatus =
-                            member.availability?.[day as keyof Availability]?.[
-                              time as keyof DayAvailability
-                            ];
-
-                          if (availabilityStatus === "unknown") {
-                            return null;
-                          }
-
-                          return (
-                            <div
-                              key={index}
-                              className={cn(
-                                member.name == clientUsername &&
-                                  "static hover:scale-110 transition duration-500 transform",
-                                `flex flex-col items-center w-20 h-12 p-2 min-w-20 rounded-md  gap-2  ${AVAILABILITY_COLORS[availabilityStatus]} `,
-                              )}
-                            >
-                              <div className={cn("flex flex-row gap-2")}>
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger>
-                                      <Avatar
-                                        className="w-6 h-6"
-                                        onClick={() => {
-                                          if (member.name === clientUsername) {
-                                            handleCellClick(
-                                              day as keyof Availability,
-                                              time as keyof DayAvailability,
-                                              "unknown",
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        <AvatarImage
-                                          src="/placeholder-user.jpg"
-                                          className="bg-slate-500"
-                                        />
-                                        <AvatarFallback>
-                                          {(member.name as string).charAt(0)}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                    </TooltipTrigger>
-                                    {member.name === clientUsername && (
-                                      <TooltipContent>
-                                        Click to delete
-                                      </TooltipContent>
-                                    )}
-                                  </Tooltip>
-                                </TooltipProvider>
-
-                                <span className="text-sm">{member.name}</span>
-                              </div>
-                              {member.name === clientUsername && (
-                                <div className="relative group">
-                                  <XIcon className="w-4 h-4 text-red-700 hidden group-hover:block absolute top-0 right-0" />
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-
-                      {!members ||
-                        members.length === 0 ||
-                        (members.every(
-                          (member) =>
-                            member.availability?.[day as keyof Availability]?.[
-                              time as keyof DayAvailability
-                            ] === "unknown",
-                        ) && (
-                          <div className="flex items-center justify-center w-full h-12 m-auto">
-                            <GhostIcon className="w-6 h-6 text-gray-300" />
-                            <span className="text-gray-300 text-sm ml-2">
-                              No members available
-                            </span>
-                          </div>
-                        ))}
-                    </div>
+                      availability={availability as Availability}
+                      swapAvailabilityStatus={swapAvailabilityStatus}
+                      day={day as keyof Availability}
+                      time={time as keyof DayAvailability}
+                      chosenAvailability={chosenAvailability}
+                      members={members}
+                      clientUsername={clientUsername}
+                      handleCellClick={handleCellClick}
+                    />
                   ))}
                 </div>
               </React.Fragment>
