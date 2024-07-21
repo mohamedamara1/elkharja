@@ -44,7 +44,7 @@ export function AvailabilityCalendar({
 
   return (
     <div className="pt-4 flex flex-col gap-2">
-      <div className="w-40 h-40 bg-black"></div>
+      <div className="w-40 h-40 "></div>
       <div className="flex flex-col gap-8 m-auto w-fit p-4 align-middle items-center">
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Hello{" "}
